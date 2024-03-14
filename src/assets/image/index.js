@@ -6,4 +6,5 @@ export const imageSources = {
   sunrise: require('../image/sunrise.png'),
   sunset: require('../image/sunset.jpg'),
   maxTemp: require('../image/maxTemp.png'),
+  minTemp: require('../image/minTemp.jpg'),
 };

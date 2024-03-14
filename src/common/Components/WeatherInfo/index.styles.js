@@ -41,15 +41,18 @@ export const styles = StyleSheet.create({
   info: {
     marginTop: respSize(10),
     width: respSize(150),
-    backgroundColor: Colors.lightGrey,
+    backgroundColor: Colors.white,
     padding: respSize(10),
     borderRadius: respSize(15),
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: Colors.lightGrey,
   },
   smallIcons: {
     height: respSize(40),
     width: respSize(40),
+    resizeMode: 'contain',
     borderRadius: respSize(10),
   },
   infoTxt: {

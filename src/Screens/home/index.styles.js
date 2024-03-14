@@ -5,6 +5,7 @@ export const styles = StyleSheet.create({
   loaderStyleContainer: {
     flex: 1,
     justifyContent: 'center',
+    backgroundColor: Colors.white,
   },
   notFoundScreenContainer: {
     flexGrow: 1,

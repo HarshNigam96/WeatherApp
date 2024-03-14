@@ -58,13 +58,13 @@ const WeatherInfo = ({weatherDetails, getWeatherData, forecastData}) => {
         <Text style={styles.descriptionTxt}>{description}</Text>
         <View style={styles.extraInfo}>
           <View style={styles.info}>
-            <Image source={imageSources.temp} style={styles.smallIcons} />
-            <Text style={styles.infoTxt}>{temp_min}°C</Text>
+            <Image source={imageSources.minTemp} style={styles.smallIcons} />
+            <Text style={styles.infoTxt}>{convertToCelsius(temp_min)}°{isFahrenheit ? 'F' : 'C'}</Text>
             <Text style={styles.infoTxt}>Minimum temp</Text>
           </View>
           <View style={styles.info}>
-            <Image source={imageSources.humidity} style={styles.smallIcons} />
-            <Text style={styles.infoTxt}>{temp_max} °C</Text>
+            <Image source={imageSources.maxTemp} style={styles.smallIcons} />
+            <Text style={styles.infoTxt}>{convertToCelsius(temp_max)}°{isFahrenheit ? 'F' : 'C'}</Text>
             <Text style={styles.infoTxt}>Max temp</Text>
           </View>
         </View>

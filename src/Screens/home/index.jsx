@@ -1,12 +1,14 @@
-import {useEffect, useState} from 'react';
-import {ActivityIndicator, Platform, Text, View,PermissionsAndroid,Alert,AppState,Switch} from 'react-native';
-import {Colors} from '../../common/Colors';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Alert, AppState, PermissionsAndroid, Text, View } from 'react-native';
+import Geolocation from 'react-native-geolocation-service';
+import { openSettings } from 'react-native-permissions';
+import { Colors } from '../../common/Colors';
 import SearchInput from '../../common/Components/SearchInput/index';
 import WeatherInfo from '../../common/Components/WeatherInfo';
-import {showToast} from '../../utils/ToastFunction';
-import {styles} from './index.styles';
-import { openSettings} from 'react-native-permissions';
+import { showToast } from '../../utils/ToastFunction';
+import { styles } from './index.styles';
 const API_KEY = '06ef9dbcc7bf3390f4bf9e48adda2aac';
+
 const baseUrl="https://api.openweathermap.org/data/2.5";
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
@@ -72,8 +74,39 @@ const Weather = () => {
     
   };
 
-  const getCurrentLocation=()=>{
-    getWeather("Ujjain")
+  const getCurrentLocation=async()=>{
+    Geolocation.getCurrentPosition(
+      (position) => {
+        const {latitude,longitude}=position.coords
+        getBytLatLon(latitude,longitude)
+      },
+      (error) => {
+        console.log(error.code, error.message);
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+    )
+  }
+
+  const getBytLatLon=async(latitude,longitude)=>{
+    
+    if(latitude&&longitude){
+      try {
+        const response = await fetch(
+          `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${API_KEY}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          getWeather(data[0].local_names.en)
+          setWeatherData(data);
+          getForecast(city);
+          setIsLoading(false);
+        } else {
+          setWeatherData(null);
+          setIsLoading(false);
+        }
+      } catch (err) {
+      }
+    }
   }
 
   const getWeather = async city => {
@@ -132,7 +165,7 @@ const Weather = () => {
     );
   } else if (weatherData === null) {
     return (
-      <View style={{flex: 1}}>
+      <View style={{flex: 1,backgroundColor:Colors.white}}>
         <SearchInput getWeatherData={getWeather} />
         <View style={styles.notFoundScreenContainer}>
           <Text style={styles.errTxt}>City Not Found!</Text>

@@ -8,7 +8,7 @@ const SearchInput = ({getWeatherData}) => {
   return (
     <View style={{margin: respSize(20)}}>
       <TextInput
-        value={cityName}
+        value={cityName.trimStart()}
         placeholderTextColor={Colors.black}
         placeholder="Search City...."
         onChangeText={val => setCityName(val)}
