@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     fontSize: respSize(20),
     fontWeight: 'bold',
     textAlign: 'center',
+    color: Colors.black,
   },
   descriptionTxt: {
     textAlign: 'center',
@@ -55,5 +56,12 @@ export const styles = StyleSheet.create({
     color: Colors.black,
     marginTop: respSize(5),
     textAlign: 'center',
+  },
+  toggleContainer: {
+    flexGrow: 1,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginHorizontal: respSize(20),
   },
 });

@@ -1,27 +1,86 @@
 import {useEffect, useState} from 'react';
-import {ActivityIndicator, Platform, Text, View,PermissionsAndroid} from 'react-native';
+import {ActivityIndicator, Platform, Text, View,PermissionsAndroid,Alert,AppState,Switch} from 'react-native';
 import {Colors} from '../../common/Colors';
 import SearchInput from '../../common/Components/SearchInput/index';
 import WeatherInfo from '../../common/Components/WeatherInfo';
 import {showToast} from '../../utils/ToastFunction';
 import {styles} from './index.styles';
-import {check, PERMISSIONS, RESULTS,request} from 'react-native-permissions';
+import { openSettings} from 'react-native-permissions';
 const API_KEY = '06ef9dbcc7bf3390f4bf9e48adda2aac';
-
+const baseUrl="https://api.openweathermap.org/data/2.5";
 const Weather = () => {
   const [weatherData, setWeatherData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [forecastData, setForecastData] = useState(null);
+  const [appState, setAppState] = useState(AppState.currentState);
+  const [IsRequestPermissionOpen, setIsRequestPermissionOpen] = useState(false);
   useEffect(() => {
-    getWeather('New York');
+
+    AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      AppState.addEventListener('change', handleAppStateChange).remove();
+    };
   }, []);
 
+  useEffect(() => {
+    if (appState === 'active') {
+      checkLocationPermission();
+    }
+  }, [appState]);
+
+
+  const handleAppStateChange = (state) => {
+    setAppState(state);
+   
+  };
+
+  const checkLocationPermission = async () => {
+    if(!IsRequestPermissionOpen){
+      setIsRequestPermissionOpen(true)
+      try {
+        const granted = await PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+          {
+            title: 'Location Permission',
+            message: 'This app requires access to your location.',
+            buttonPositive: 'OK',
+          }
+        );
+  
+        if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+           getCurrentLocation()
+        } else {
+          Alert.alert(
+            'Permission Denied',
+            'This app requires access to your location to function properly.',
+            [
+              {
+                text: 'OK',
+                onPress: () => {
+                  setIsRequestPermissionOpen(false)
+                  openSettings()
+                },
+              },
+            ],
+          );
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+    
+  };
+
+  const getCurrentLocation=()=>{
+    getWeather("Ujjain")
+  }
 
   const getWeather = async city => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`,
+        `${baseUrl}/weather?q=${city}&appid=${API_KEY}&units=metric`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -41,7 +100,7 @@ const Weather = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${API_KEY}&cnt=40`,
+        `${baseUrl}/forecast?q=${city}&appid=${API_KEY}&cnt=40`,
       );
       if (response.ok) {
         const data = await response.json();
@@ -49,8 +108,8 @@ const Weather = () => {
         const uniqueDates = {};
         const upcomingData = data.list.filter(forecast => {
           const forecastDate = new Date(forecast.dt_txt.split(' ')[0]).toLocaleDateString('en-US');
-          if (forecastDate === currentDate) return false; // Exclude today's forecast
-          if (uniqueDates[forecastDate]) return false; // Exclude duplicates
+          if (forecastDate === currentDate) return false;
+          if (uniqueDates[forecastDate]) return false; 
           uniqueDates[forecastDate] = true;
           return true;
         });
@@ -83,7 +142,7 @@ const Weather = () => {
     );
   }
   return (
-    <View style={{flex: 1}}>
+    <View style={{flex: 1,backgroundColor:Colors.white}}>
       <WeatherInfo
         forecastData={forecastData}
         weatherDetails={weatherData}
