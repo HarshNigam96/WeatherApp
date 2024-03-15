@@ -48,7 +48,7 @@ const WeatherInfo = ({weatherDetails, getWeatherData, forecastData}) => {
         </View>
         <View style={styles.weatherLogo}>
           <Image
-            source={{uri: `http://openweathermap.org/img/wn/${icon}@2x.png`}}
+            source={{uri: `https://openweathermap.org/img/wn/${icon}@2x.png`}}
             style={styles.iconStyle}
           />
           <Text style={styles.currentTempStyle}>
@@ -99,7 +99,7 @@ const WeatherInfo = ({weatherDetails, getWeatherData, forecastData}) => {
                   <View style={styles.info}>
                     <Image
                       source={{
-                        uri: `http://openweathermap.org/img/wn/${foreCasticon}.png`,
+                        uri: `https://openweathermap.org/img/wn/${foreCasticon}.png`,
                       }}
                       style={styles.smallIcons}
                     />
