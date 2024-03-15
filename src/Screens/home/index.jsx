@@ -92,7 +92,7 @@ const Weather = () => {
     if(latitude&&longitude){
       try {
         const response = await fetch(
-          `http://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${API_KEY}`
+          `https://api.openweathermap.org/geo/1.0/reverse?lat=${latitude}&lon=${longitude}&limit=1&appid=${API_KEY}`
         );
         if (response.ok) {
           const data = await response.json();
